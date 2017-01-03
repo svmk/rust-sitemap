@@ -1,0 +1,15 @@
+[package]
+name = "sitemap"
+version = "0.1.0"
+authors = ["Mikhail Svetov <svmk-work@yandex.ru>"]
+description = "Sitemap parser (reader)"
+keywords=["sitemap","parser","reader","parse"]
+readme="README.md"
+documentation = "(https://svmk.github.io/sitemap/0.1.0/sitemap"
+repository = "https://github.com/svmk/rust-sitemap"
+license="MIT"
+[dependencies]
+xml-rs=">=0.3"
+url=">=0.5.0"
+chrono_utils=">=0.1.0"
+chrono=">=0.2"
