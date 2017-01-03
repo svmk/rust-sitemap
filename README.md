@@ -13,6 +13,7 @@ sitemap is an library for [Rust](http://www.rust-lang.org/) programming language
 
 ## features
 * Streaming reading sitemap
+
 ## Restrictions
 * no other encodings but UTF-8 are supported yet
 * validation is not supported
