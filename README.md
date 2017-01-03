@@ -1,10 +1,13 @@
 # sitemap, an Sitemap library for Rust
 
-[![Build Status][build-status-img]](https://travis-ci.org/svmk/sitemap)
-[![crates.io][crates-io-img]](https://crates.io/crates/sitemap)
-[![docs][docs-img]](https://svmk.github.io/sitemap/)
+[![Chrono-utils on Travis CI][travis-image]][travis]
+[![Chrono-utils on crates.io][cratesio-image]][cratesio]
 
-[Documentation](https://svmk.github.io/sitemap/)
+[travis-image]: https://travis-ci.org/svmk/rust-sitemap.svg?branch=master
+[travis]: https://travis-ci.org/svmk/rust-sitemap
+[cratesio-image]: https://img.shields.io/crates/v/sitemap.svg
+[cratesio]: https://crates.io/crates/sitemap
+
 
 sitemap is an library for [Rust](http://www.rust-lang.org/) programming language.
 
