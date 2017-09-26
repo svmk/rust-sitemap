@@ -42,7 +42,7 @@ fn main() {
     let mut urls = Vec::new();
     let mut sitemaps = Vec::new();
     let mut errors = Vec::new();
-    let file = File::open("sitemap.xml").except("Unable to open file.");
+    let file = File::open("sitemap.xml").expect("Unable to open file.");
     let parser = SiteMapReader::new(file);
     for entity in parser {
         match entity {
