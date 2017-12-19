@@ -1,5 +1,5 @@
 //! This crate provides Sitemap parser.
-//!# Examples
+//! # Examples
 //!
 //! [Reading sitemap](reader/index.html#examples).
 extern crate xml;
@@ -8,3 +8,4 @@ extern crate chrono_utils;
 extern crate chrono;
 pub mod structs;
 pub mod reader;
+pub mod writer;
