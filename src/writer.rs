@@ -1,6 +1,7 @@
 
 use std::io::Write;
-use xml::writer::{EventWriter, EmitterConfig, XmlEvent, Error};
+use Error;
+use xml::writer::{EventWriter, EmitterConfig, XmlEvent};
 use structs::{UrlEntry, Location, LastMod, ChangeFreq, Priority, SiteMapEntry};
 
 pub struct SiteMapWriter<T: Write + Sized> {

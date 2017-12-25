@@ -6,9 +6,9 @@ use chrono_utils;
 use chrono::DateTime;
 use chrono::FixedOffset;
 use chrono_utils::parser::parse_w3c_datetime;
-use std::error::Error;
 use std::fmt;
 use std::num;
+use Error;
 
 /// Url entry. Contains url location, modification time,
 /// priority, update frequency.
@@ -23,30 +23,40 @@ pub struct UrlEntry {
     /// The priority of this URL relative to other URLs on the site.
     pub priority: Priority,
 }
+
 pub struct UrlEntryBuilder {
     url_entry: UrlEntry,
 }
 
 impl UrlEntryBuilder {
-    pub fn loc(mut self, url: String) -> UrlEntryBuilder {
+    pub fn loc(mut self, url: String) -> Result<UrlEntryBuilder, Error> {
         self.url_entry.loc = Location::from(url);
-        self
+        Ok(self)
     }
-    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> UrlEntryBuilder {
+    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> Result<UrlEntryBuilder, Error> {
         self.url_entry.lastmod = LastMod::DateTime(date);
-        self
+        Ok(self)
     }
-    pub fn changefreq(mut self, changefreq: ChangeFreq) -> UrlEntryBuilder {
+    pub fn changefreq(mut self, changefreq: ChangeFreq) -> Result<UrlEntryBuilder, Error> {
         self.url_entry.changefreq = changefreq;
-        self
+        Ok(self)
     }
-    pub fn priority(mut self, val: f32) -> UrlEntryBuilder {
-        self.url_entry.priority = Priority::Value(val);
-        self
+    pub fn priority(mut self, val: f32) -> Result<UrlEntryBuilder, Error> {
+        if val > 1.0 || val < 0.0 {
+            Err(Error::Invalid("priority should be betwheen 0 and 1".to_string()))
+        } else {
+            self.url_entry.priority = Priority::Value(val);
+            Ok(self)
+        }
     }
-    pub fn build(self) -> UrlEntry {
+
+    pub fn build(self) -> Result<UrlEntry, Error> {
         // TODO: add check for at least the name.
-        self.url_entry
+        if let Location::Url(_) = self.url_entry.loc {
+            Ok(self.url_entry)
+        } else {
+            Err(Error::Invalid("Required a location in the Url".to_string()))
+        }
     }
 }
 
@@ -70,19 +80,23 @@ pub struct SiteMapEntryBuilder {
 }
 
 impl SiteMapEntryBuilder {
-    pub fn loc(mut self, url: String) -> SiteMapEntryBuilder {
+    pub fn loc(mut self, url: String) -> Result<SiteMapEntryBuilder, Error> {
         self.sitemap_entry.loc = Location::from(url);
-        self
+        Ok(self)
     }
 
-    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> SiteMapEntryBuilder {
+    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> Result<SiteMapEntryBuilder, Error> {
         self.sitemap_entry.lastmod = LastMod::DateTime(date);
-        self
+        Ok(self)
     }
 
-    pub fn build(self) -> SiteMapEntry {
+    pub fn build(self) -> Result<SiteMapEntry, Error> {
         // TODO: add check for at least the name.
-        self.sitemap_entry
+        if let Location::Url(_) = self.sitemap_entry.loc {
+            Ok(self.sitemap_entry)
+        } else {
+            Err(Error::Invalid("Required a location in the sitemap".to_string()))
+        }
     }
 }
 
@@ -195,11 +209,6 @@ impl fmt::Display for ChangeFreqParseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let _ = try!(write!(f, "Not recognezed string '{}'", self.description));
         return Ok(());
-    }
-}
-impl Error for ChangeFreqParseError {
-    fn description(&self) -> &str {
-        return "Not recognezed string";
     }
 }
 /// How frequently the page is likely to change.

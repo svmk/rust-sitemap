@@ -46,19 +46,29 @@ fn test_write_sitemap() {
                                       FixedOffset::east(0));
         let url_entry = UrlEntry::builder()
             .loc("http://www.example.com/index.html".into())
+            .expect("is valid")
             .changefreq(ChangeFreq::Daily)
+            .expect("is valid")
             .priority(0.2)
+            .expect("is valid")
             .lastmod(date)
-            .build();
+            .expect("is valid")
+            .build()
+            .expect("valid");
         urlwriter.url(url_entry).expect("can write the file");
         let date1 = DateTime::from_utc(NaiveDate::from_ymd(2016, 7, 18).and_hms(9, 10, 11),
                                        FixedOffset::east(0));
         let url_entry = UrlEntry::builder()
             .loc("http://www.example.com/other.html".into())
+            .expect("is valid")
             .changefreq(ChangeFreq::Monthly)
+            .expect("is valid")
             .priority(0.1)
+            .expect("is valid")
             .lastmod(date1)
-            .build();
+            .expect("is valid")
+            .build()
+            .expect("valid");
         urlwriter.url(url_entry).expect("can write the file");
         let sitemap_writer = urlwriter.end().expect("close the urlset block");
 
@@ -66,10 +76,22 @@ fn test_write_sitemap() {
             .expect("start sitemap index tag");
         let sitemap_entry = SiteMapEntry::builder()
             .loc("http://www.example.com/other_sitemap.xml".into())
+            .expect("is valid")
             .lastmod(date1)
-            .build();
+            .expect("is valid")
+            .build()
+            .expect("valid");
         sitemap_index_writer.sitemap(sitemap_entry).expect("can write the file");
         sitemap_index_writer.end().expect("close sitemap block");
     }
     assert_eq!(output, CONTENT.as_bytes());
+}
+
+
+#[test]
+fn test_validation() {
+    assert!(UrlEntry::builder().build().is_err());
+    assert!(UrlEntry::builder().priority(2.0).is_err());
+    assert!(UrlEntry::builder().priority(-1.0).is_err());
+    assert!(SiteMapEntry::builder().build().is_err());
 }
