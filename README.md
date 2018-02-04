@@ -22,7 +22,7 @@ sitemap is an library for [Rust](http://www.rust-lang.org/) programming language
 sitemap uses Cargo, so just add a dependency section in your project's manifest:
 ```
 [dependencies]
-sitemap = "0.1.1"
+sitemap = "0.2"
 ```
 The package exposes a single crate called sitemap:
 ```rust
