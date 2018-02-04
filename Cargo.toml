@@ -1,11 +1,11 @@
 [package]
 name = "sitemap"
-version = "0.1.1"
-authors = ["Mikhail Svetov <svmk-tmsk@yandex.ru>"]
-description = "Sitemap parser (reader)"
-keywords=["sitemap","parser","reader","parse"]
+version = "0.2.0"
+authors = ["Mikhail Svetov <svmk-tmsk@yandex.ru>", "tglman <https://github.com/tglman>"]
+description = "Sitemap parser (reader) and writer"
+keywords=["sitemap","parser","reader","parse","write sitemap","generate sitemap"]
 readme="README.md"
-documentation = "https://svmk.github.io/sitemap/0.1.0/sitemap/"
+documentation = "https://svmk.github.io/sitemap/0.2.0/sitemap/"
 repository = "https://github.com/svmk/rust-sitemap"
 license="MIT"
 [dependencies]

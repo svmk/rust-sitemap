@@ -1,7 +1,8 @@
-//! This crate provides Sitemap parser.
+//! This crate provides Sitemap parser and writer.
 //! # Examples
 //!
 //! [Reading sitemap](reader/index.html#examples).
+//! [Writing sitemap](writer/index.html#examples).
 extern crate xml;
 extern crate url;
 extern crate chrono_utils;
@@ -10,9 +11,12 @@ pub mod structs;
 pub mod reader;
 pub mod writer;
 
+/// Sitemap errors
 #[derive(Debug)]
 pub enum Error {
+	/// Unable to write data into writer
     XmlWriteError(xml::writer::Error),
+    /// Error
     Invalid(String),
 }
 

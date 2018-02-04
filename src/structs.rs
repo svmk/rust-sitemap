@@ -2,6 +2,7 @@
 use url::Url;
 use url;
 use std::convert::From;
+use std::convert::Into;
 use chrono_utils;
 use chrono::DateTime;
 use chrono::FixedOffset;
@@ -24,42 +25,6 @@ pub struct UrlEntry {
     pub priority: Priority,
 }
 
-pub struct UrlEntryBuilder {
-    url_entry: UrlEntry,
-}
-
-impl UrlEntryBuilder {
-    pub fn loc(mut self, url: String) -> Result<UrlEntryBuilder, Error> {
-        self.url_entry.loc = Location::from(url);
-        Ok(self)
-    }
-    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> Result<UrlEntryBuilder, Error> {
-        self.url_entry.lastmod = LastMod::DateTime(date);
-        Ok(self)
-    }
-    pub fn changefreq(mut self, changefreq: ChangeFreq) -> Result<UrlEntryBuilder, Error> {
-        self.url_entry.changefreq = changefreq;
-        Ok(self)
-    }
-    pub fn priority(mut self, val: f32) -> Result<UrlEntryBuilder, Error> {
-        if val > 1.0 || val < 0.0 {
-            Err(Error::Invalid("priority should be betwheen 0 and 1".to_string()))
-        } else {
-            self.url_entry.priority = Priority::Value(val);
-            Ok(self)
-        }
-    }
-
-    pub fn build(self) -> Result<UrlEntry, Error> {
-        // TODO: add check for at least the name.
-        if let Location::Url(_) = self.url_entry.loc {
-            Ok(self.url_entry)
-        } else {
-            Err(Error::Invalid("Required a location in the Url".to_string()))
-        }
-    }
-}
-
 impl UrlEntry {
     /// Creates a new empty `UrlEntry`.
     pub fn new() -> UrlEntry {
@@ -70,33 +35,88 @@ impl UrlEntry {
             priority: Priority::None,
         }
     }
+
+    /// Creates builder for `UrlEntry` structure
     pub fn builder() -> UrlEntryBuilder {
         UrlEntryBuilder { url_entry: UrlEntry::new() }
     }
 }
 
-pub struct SiteMapEntryBuilder {
-    sitemap_entry: SiteMapEntry,
+/// Builds `UrlEntry` structure
+#[derive(Clone,Debug)]
+pub struct UrlEntryBuilder {
+    url_entry: UrlEntry,
 }
 
-impl SiteMapEntryBuilder {
-    pub fn loc(mut self, url: String) -> Result<SiteMapEntryBuilder, Error> {
-        self.sitemap_entry.loc = Location::from(url);
-        Ok(self)
+impl UrlEntryBuilder {
+    /// Defines `loc` tag
+    pub fn loc<S: Into<String>>(mut self, url: S) -> UrlEntryBuilder {
+        let url = url.into();
+        self.url_entry.loc = Location::from(url);
+        return self;
     }
 
-    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> Result<SiteMapEntryBuilder, Error> {
-        self.sitemap_entry.lastmod = LastMod::DateTime(date);
-        Ok(self)
+    /// Defines `lastmod` tag
+    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> UrlEntryBuilder {
+        self.url_entry.lastmod = LastMod::DateTime(date);
+        return self;
     }
 
-    pub fn build(self) -> Result<SiteMapEntry, Error> {
+    /// Defines `changefreq` tag
+    pub fn changefreq(mut self, changefreq: ChangeFreq) -> UrlEntryBuilder {
+        self.url_entry.changefreq = changefreq;
+        return self;
+    }
+
+    /// Defines `priority` tag
+    pub fn priority(mut self, val: f32) -> UrlEntryBuilder {
+        self.url_entry.priority = Priority::Value(val);
+        return self;
+    }
+
+    /// Builds `UrlEntry` structure
+    pub fn build(self) -> Result<UrlEntry, Error> {
         // TODO: add check for at least the name.
-        if let Location::Url(_) = self.sitemap_entry.loc {
-            Ok(self.sitemap_entry)
-        } else {
-            Err(Error::Invalid("Required a location in the sitemap".to_string()))
+        if !self.url_entry.loc.is_url() {
+            return Err(Error::Invalid("Required a location in the Url".to_string()));
         }
+        if let Priority::Value(val) = self.url_entry.priority {
+            if val > 1.0 || val < 0.0 {
+                return Err(Error::Invalid("priority should be betwheen 0 and 1".to_string()))
+            }
+        }
+        return Ok(self.url_entry);
+    }
+}
+
+impl Into<UrlEntry> for UrlEntryBuilder {
+    /// Panics when builder is misconfigured.
+    fn into(self) -> UrlEntry {
+        return self.build().unwrap();
+    }
+}
+
+impl Into<UrlEntry> for String {
+    /// Panics when url is invalid
+    fn into(self) -> UrlEntry {
+        let location = Location::from(self);
+        if let Location::ParseErr(error) = location {
+            panic!("Unable to parse location: {}", error);
+        }
+        UrlEntry {
+            loc: location,
+            lastmod: LastMod::None,
+            changefreq: ChangeFreq::None,
+            priority: Priority::None,
+        }
+    }
+}
+
+impl Into<UrlEntry> for &'static str {
+    /// Panics when url is invalid
+    fn into(self) -> UrlEntry {
+        let location: String = self.into();
+        return location.into();
     }
 }
 
@@ -117,8 +137,70 @@ impl SiteMapEntry {
         }
     }
 
+    /// Creates builder for `SiteMapEntry` structure
     pub fn builder() -> SiteMapEntryBuilder {
         SiteMapEntryBuilder { sitemap_entry: SiteMapEntry::new() }
+    }
+}
+
+
+/// Builds `SiteMapEntry` structure
+#[derive(Debug,Clone)]
+pub struct SiteMapEntryBuilder {
+    sitemap_entry: SiteMapEntry,
+}
+
+impl SiteMapEntryBuilder {
+    /// Defines `loc` tag
+    pub fn loc<S: Into<String>>(mut self, url: S) -> SiteMapEntryBuilder {
+        let url = url.into();
+        self.sitemap_entry.loc = Location::from(url);
+        return self;
+    }
+
+    /// Defines `lastmod` tag
+    pub fn lastmod(mut self, date: DateTime<FixedOffset>) -> SiteMapEntryBuilder {
+        self.sitemap_entry.lastmod = LastMod::DateTime(date);
+        return self;
+    }
+
+    /// Builds `SiteMapEntry` structure
+    pub fn build(self) -> Result<SiteMapEntry, Error> {
+        // TODO: add check for at least the name.
+        if let Location::Url(_) = self.sitemap_entry.loc {
+            Ok(self.sitemap_entry)
+        } else {
+            Err(Error::Invalid("Required a location in the sitemap".to_string()))
+        }
+    }
+}
+
+impl Into<SiteMapEntry> for SiteMapEntryBuilder {
+    /// Panics when builder is misconfigured.
+    fn into(self) -> SiteMapEntry {
+        return self.build().unwrap();
+    }
+}
+
+impl Into<SiteMapEntry> for String {
+    /// Panics when url is invalid
+    fn into(self) -> SiteMapEntry {
+        let location = Location::from(self);
+        if let Location::ParseErr(error) = location {
+            panic!("Unable to parse location: {}", error);
+        }
+        SiteMapEntry {
+            loc: location,
+            lastmod: LastMod::None,
+        }
+    }
+}
+
+impl Into<SiteMapEntry> for &'static str {
+    /// Panics when url is invalid
+    fn into(self) -> SiteMapEntry {
+        let location: String = self.into();
+        return location.into();
     }
 }
 
@@ -130,7 +212,7 @@ pub enum Location {
     /// Url
     Url(Url),
     /// Url parse error.
-    Err(url::ParseError),
+    ParseErr(url::ParseError),
 }
 impl Location {
     /// Returns url if present.
@@ -144,6 +226,30 @@ impl Location {
             }
         }
     }
+
+    /// Checks is location equals url
+    pub fn is_url(&self) -> bool {
+        return match *self {
+            Location::Url(_) => true,
+            _ => false,
+        }
+    }
+
+    /// Checks is location equals none
+    pub fn is_none(&self) -> bool {
+        return match *self {
+            Location::None => true,
+            _ => false,
+        }
+    }
+
+    /// Checks is location contains parse error.
+    pub fn is_parse_error(&self) -> bool {
+        return match *self {
+            Location::ParseErr(_) => true,
+            _ => false,
+        }
+    }
 }
 impl From<String> for Location {
     /// Parses Url from string.
@@ -153,7 +259,7 @@ impl From<String> for Location {
                 return Location::Url(url);
             }
             Err(error) => {
-                return Location::Err(error);
+                return Location::ParseErr(error);
             }
         }
     }
@@ -166,7 +272,7 @@ pub enum LastMod {
     /// Modification time
     DateTime(DateTime<FixedOffset>),
     /// Parse error
-    Err(chrono_utils::parser::error::ParseError),
+    ParseErr(chrono_utils::parser::error::ParseError),
 }
 impl LastMod {
     /// Returns modification time if present.
@@ -188,7 +294,7 @@ impl From<String> for LastMod {
                 return LastMod::DateTime(time);
             }
             Err(error) => {
-                return LastMod::Err(error);
+                return LastMod::ParseErr(error);
             }			
         }
     }
@@ -231,7 +337,7 @@ pub enum ChangeFreq {
     /// Archived URL.
     Never,
     /// Parse error.
-    Err(ChangeFreqParseError),
+    ParseErr(ChangeFreqParseError),
 }
 impl ChangeFreq {
     pub fn as_str(&self) -> &str {
@@ -244,7 +350,7 @@ impl ChangeFreq {
             ChangeFreq::Monthly => "monthly",
             ChangeFreq::Yearly => "yearly",
             ChangeFreq::Never => "never",
-            ChangeFreq::Err(_) => "",
+            ChangeFreq::ParseErr(_) => "",
         }
 
     }
@@ -275,7 +381,7 @@ impl From<String> for ChangeFreq {
                 return ChangeFreq::Never;
             }
             _ => {
-                return ChangeFreq::Err(ChangeFreqParseError::new(time));
+                return ChangeFreq::ParseErr(ChangeFreqParseError::new(time));
             }
         }
     }
@@ -289,7 +395,7 @@ pub enum Priority {
     /// Priority
     Value(f32),
     /// Parse error.
-    Err(num::ParseFloatError),
+    ParseErr(num::ParseFloatError),
     /// Error: priority lesser than zero.
     ErrValueLesserZero(f32),
     /// Error: priority greater than one.
@@ -322,7 +428,7 @@ impl From<String> for Priority {
                 }
             }
             Err(error) => {
-                return Priority::Err(error);
+                return Priority::ParseErr(error);
             }
         }
     }

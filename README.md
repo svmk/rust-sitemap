@@ -62,9 +62,27 @@ fn main() {
     println!("errors = {:?}",errors);
 }
 ```
+
+## Writng sitemap documents
+```rust
+extern crate sitemap;
+use sitemap::writer::SiteMapWriter;
+use sitemap::structs::UrlEntry;
+use std::io::stdout;
+fn main() {
+    let mut output = stdout();
+    let sitemap_writer = SiteMapWriter::new(&mut output);
+    let mut urlwriter = sitemap_writer.start_urlset().expect("Unable to write urlset");
+    urlwriter.url("http://github.com").expect("Unable to write url");
+    urlwriter.url(UrlEntry::builder().loc("http://google.com")).expect("Unable to write url");
+    urlwriter.url(UrlEntry::builder().loc("http://yandex.ru").build().unwrap()).expect("Unable to write url");
+    urlwriter.end().expect("Unable to write close tags");
+}
+```
+
 ## Roadmap
 Highest priority first, approximately.
-1. Sitemap writer
+1. Sitemap writer - done
 2. Sitemap validation
 
 ## Known issues
