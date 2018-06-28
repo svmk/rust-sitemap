@@ -11,6 +11,8 @@ pub mod structs;
 pub mod reader;
 pub mod writer;
 
+use std::{fmt, error};
+
 /// Sitemap errors
 #[derive(Debug)]
 pub enum Error {
@@ -25,3 +27,26 @@ impl From<xml::writer::Error> for Error {
         Error::XmlWriteError(err)
     }
 }
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Error::XmlWriteError(ref err) => write!(f, "sitemap error: {}", err),
+            Error::Invalid(s) => write!(f, "sitemap error: {}", s),
+        }
+    }
+}
+
+impl error::Error for Error {
+    fn cause(&self) -> Option<&error::Error> {
+        match self {
+            Error::XmlWriteError(ref err) => Some(err),
+            _ => None,
+        }
+    }
+    fn description(&self) -> &str {
+        // This method is soft-deprecated.
+        "sitemap error"
+    }
+}
+
