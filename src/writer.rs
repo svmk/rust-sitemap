@@ -38,7 +38,7 @@ impl<T: Write + Sized> SiteMapWriter<T> {
 
     /// Starts writing urls
     pub fn start_urlset(mut self) -> Result<UrlSetWriter<T>, Error> {
-        self.writer.write(XmlEvent::start_element("urlset"))?;
+        self.writer.write(XmlEvent::start_element("urlset").default_ns("http://www.sitemaps.org/schemas/sitemap/0.9"))?;
         Ok(UrlSetWriter { sitemap: self })
     }
 
