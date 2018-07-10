@@ -96,6 +96,18 @@ impl Into<UrlEntry> for UrlEntryBuilder {
     }
 }
 
+impl Into<UrlEntry> for Url {
+    /// Notably does not panic
+    fn into( self ) -> UrlEntry {
+        UrlEntry {
+            loc: Location::from(self),
+            lastmod: LastMod::None,
+            changefreq: ChangeFreq::None,
+            priority: Priority::None,
+        }
+    }
+}
+
 impl Into<UrlEntry> for String {
     /// Panics when url is invalid
     fn into(self) -> UrlEntry {
@@ -182,6 +194,16 @@ impl Into<SiteMapEntry> for SiteMapEntryBuilder {
     }
 }
 
+impl Into<SiteMapEntry> for Url {
+    /// Notably does not panic
+    fn into( self ) -> SiteMapEntry {
+        SiteMapEntry {
+            loc: Location::from( self ),
+            lastmod: LastMod::None,
+        }
+    }
+}
+
 impl Into<SiteMapEntry> for String {
     /// Panics when url is invalid
     fn into(self) -> SiteMapEntry {
@@ -251,6 +273,13 @@ impl Location {
         }
     }
 }
+impl From<Url> for Location {
+    ///Wraps a Url into a Location enum
+    fn from( url: Url ) -> Self {
+        Location::Url( url )
+    }
+}
+
 impl From<String> for Location {
     /// Parses Url from string.
     fn from(url: String) -> Self {
@@ -295,7 +324,7 @@ impl From<String> for LastMod {
             }
             Err(error) => {
                 return LastMod::ParseErr(error);
-            }			
+            }
         }
     }
 }
