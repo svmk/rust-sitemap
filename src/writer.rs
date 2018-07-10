@@ -36,12 +36,24 @@ impl<T: Write + Sized> SiteMapWriter<T> {
         SiteMapWriter { writer: writer }
     }
 
-    /// Starts writing urls
-    pub fn start_urlset(mut self) -> Result<UrlSetWriter<T>, Error> {
-        self.writer.write(XmlEvent::start_element("urlset").default_ns("http://www.sitemaps.org/schemas/sitemap/0.9"))?;
+    /// Starts writing urls with sitemap namespace
+    /// Adds namespace attribute `http://www.sitemaps.org/schemas/sitemap/0.9` for `urlset` tag
+    pub fn start_urlset(self) -> Result<UrlSetWriter<T>, Error> {
+        return self.start_urlset_ns("http://www.sitemaps.org/schemas/sitemap/0.9");
+    }
+
+    /// Starts writing urls with custom sitemap namespace
+    /// Adds specified namespace attribute for `urlset` tag
+    pub fn start_urlset_ns(mut self, namespace: &str) -> Result<UrlSetWriter<T>, Error> {
+        self.writer.write(XmlEvent::start_element("urlset").default_ns(namespace))?;
         Ok(UrlSetWriter { sitemap: self })
     }
 
+    /// Starts writing urls without namespace
+    pub fn start_urlset_without_ns(mut self) -> Result<UrlSetWriter<T>, Error> {
+        self.writer.write(XmlEvent::start_element("urlset"))?;
+        Ok(UrlSetWriter { sitemap: self })
+    }
     /// Starts writing sitemap urls.
     pub fn start_sitemapindex(mut self) -> Result<SiteMapIndexWriter<T>, Error> {
         self.writer.write(XmlEvent::start_element("sitemapindex"))?;
