@@ -7,7 +7,7 @@ use chrono::{DateTime, NaiveDate, FixedOffset};
 
 static CONTENT: &str =
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>
-<urlset>
+<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">
   <url>
     \
      <loc>http://www.example.com/index.html</loc>
@@ -74,7 +74,7 @@ fn test_write_sitemap() {
         sitemap_index_writer.sitemap(sitemap_entry).expect("Can't write the file");
         sitemap_index_writer.end().expect("close sitemap block");
     }
-    assert_eq!(output, CONTENT.as_bytes());
+    assert_eq!(std::str::from_utf8(&output),  std::str::from_utf8(CONTENT.as_bytes()));
 }
 
 #[test]
