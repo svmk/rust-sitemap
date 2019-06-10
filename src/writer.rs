@@ -24,6 +24,8 @@ use Error;
 use xml::writer::{EventWriter, EmitterConfig, XmlEvent};
 use structs::{UrlEntry, Location, LastMod, ChangeFreq, Priority, SiteMapEntry};
 
+const DEFAULT_NAMESPACE: &str = "http://www.sitemaps.org/schemas/sitemap/0.9";
+
 /// Writes xml tags into writer.
 pub struct SiteMapWriter<T: Write + Sized> {
     writer: EventWriter<T>,
@@ -39,7 +41,7 @@ impl<T: Write + Sized> SiteMapWriter<T> {
     /// Starts writing urls with sitemap namespace
     /// Adds namespace attribute `http://www.sitemaps.org/schemas/sitemap/0.9` for `urlset` tag
     pub fn start_urlset(self) -> Result<UrlSetWriter<T>, Error> {
-        return self.start_urlset_ns("http://www.sitemaps.org/schemas/sitemap/0.9");
+        return self.start_urlset_ns(DEFAULT_NAMESPACE);
     }
 
     /// Starts writing urls with custom sitemap namespace
@@ -54,8 +56,25 @@ impl<T: Write + Sized> SiteMapWriter<T> {
         self.writer.write(XmlEvent::start_element("urlset"))?;
         Ok(UrlSetWriter { sitemap: self })
     }
-    /// Starts writing sitemap urls.
-    pub fn start_sitemapindex(mut self) -> Result<SiteMapIndexWriter<T>, Error> {
+
+    /// Starts writing sitemap urls
+    /// Adds namespace attribute `http://www.sitemaps.org/schemas/sitemap/0.9` for `sitemapindex` tag
+    pub fn start_sitemapindex(self) -> Result<SiteMapIndexWriter<T>, Error> {
+        return self.start_sitemapindex_ns(DEFAULT_NAMESPACE);
+    }
+
+    /// Starts writing sitemap urls with custom sitemap namespace
+    /// Adds specified namespace attribute for `sitemapindex` tag
+    pub fn start_sitemapindex_ns(
+        mut self,
+        namespace: &str,
+    ) -> Result<SiteMapIndexWriter<T>, Error> {
+        self.writer.write(XmlEvent::start_element("sitemapindex").default_ns(namespace))?;
+        Ok(SiteMapIndexWriter { sitemap: self })
+    }
+
+    /// Starts writing sitemap urls without namespace
+    pub fn start_sitemapindex_without_ns(mut self) -> Result<SiteMapIndexWriter<T>, Error> {
         self.writer.write(XmlEvent::start_element("sitemapindex"))?;
         Ok(SiteMapIndexWriter { sitemap: self })
     }
