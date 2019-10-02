@@ -26,7 +26,7 @@ static CONTENT: &str =
      <lastmod>0.1</lastmod>
   </url>
 </urlset>
-<sitemapindex>
+<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">
   <sitemap>
     \
      <loc>http://www.example.com/other_sitemap.xml</loc>
