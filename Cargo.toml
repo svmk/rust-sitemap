@@ -1,15 +1,16 @@
 [package]
 name = "sitemap"
-version = "0.3.0"
-authors = ["Mikhail Svetov <svmk-tmsk@yandex.ru>", "tglman <https://github.com/tglman>", "John Boehr <jbboehr@gmail.com>", "Brady <https://github.com/BradyMcd>"]
+version = "0.4.0"
+authors = ["Mikhail Svetov <svmk-tmsk@yandex.ru>", "tglman <https://github.com/tglman>", "John Boehr <jbboehr@gmail.com>", "Brady <https://github.com/BradyMcd>", "RaZeR-RBI <vilkov.adel@gmail.com>"]
 description = "Sitemap parser (reader) and writer"
 keywords=["sitemap","parser","reader","parse"]
 readme="README.md"
-documentation = "https://svmk.github.io/sitemap/0.3.0/sitemap/"
 repository = "https://github.com/svmk/rust-sitemap"
 license="MIT"
+edition = "2018"
+
 [dependencies]
 xml-rs=">=0.3"
-url=">=0.5.0"
-chrono_utils="0.1.3"
-chrono="^0.4"
+url="2"
+chrono_utils="0.1"
+chrono="0.4"

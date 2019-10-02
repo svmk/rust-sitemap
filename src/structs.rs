@@ -1,4 +1,5 @@
 //! Contains structures for working with sitemap.
+use crate::Error;
 use url::Url;
 use url;
 use std::convert::From;
@@ -9,7 +10,6 @@ use chrono::FixedOffset;
 use chrono_utils::parser::parse_w3c_datetime;
 use std::fmt;
 use std::num;
-use Error;
 
 /// Url entry. Contains url location, modification time,
 /// priority, update frequency.
@@ -342,8 +342,7 @@ impl ChangeFreqParseError {
 }
 impl fmt::Display for ChangeFreqParseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let _ = try!(write!(f, "Not recognezed string '{}'", self.description));
-        return Ok(());
+        write!(f, "Not recognized string '{}'", self.description)
     }
 }
 /// How frequently the page is likely to change.

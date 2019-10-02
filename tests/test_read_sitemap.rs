@@ -1,7 +1,3 @@
-extern crate sitemap;
-extern crate url;
-extern crate chrono;
-extern crate xml;
 use sitemap::reader::{SiteMapReader, SiteMapEntity};
 use url::Url;
 use std::fs::File;

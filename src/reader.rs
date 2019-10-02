@@ -5,7 +5,6 @@
 //! Reading sitemap from file.
 //!
 //! ```rust
-//! extern crate sitemap;
 //! use sitemap::reader::{SiteMapReader,SiteMapEntity};
 //! use std::fs::File;
 //! fn main() {
@@ -32,7 +31,7 @@
 //! 	println!("errors = {:?}",errors);
 //! }
 //! ```
-use structs;
+use crate::structs;
 use xml;
 use std::io::Read;
 use xml::reader::{EventReader, XmlEvent, Events};

@@ -5,7 +5,6 @@
 //! Writing sitemap into stdout.
 //!
 //! ```rust
-//! extern crate sitemap;
 //! use sitemap::writer::SiteMapWriter;
 //! use sitemap::structs::UrlEntry;
 //! use std::io::stdout;
@@ -20,9 +19,9 @@
 //! }
 //! ```
 use std::io::Write;
-use Error;
 use xml::writer::{EventWriter, EmitterConfig, XmlEvent};
-use structs::{UrlEntry, Location, LastMod, ChangeFreq, Priority, SiteMapEntry};
+use crate::Error;
+use crate::structs::{UrlEntry, Location, LastMod, ChangeFreq, Priority, SiteMapEntry};
 
 const DEFAULT_NAMESPACE: &str = "http://www.sitemaps.org/schemas/sitemap/0.9";
 

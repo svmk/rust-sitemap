@@ -1,6 +1,3 @@
-extern crate sitemap;
-extern crate chrono;
-
 use sitemap::writer::SiteMapWriter;
 use sitemap::structs::{UrlEntry, ChangeFreq, SiteMapEntry};
 use chrono::{DateTime, NaiveDate, FixedOffset};

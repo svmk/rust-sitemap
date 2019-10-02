@@ -3,10 +3,6 @@
 //!
 //! [Reading sitemap](reader/index.html#examples).
 //! [Writing sitemap](writer/index.html#examples).
-extern crate xml;
-extern crate url;
-extern crate chrono_utils;
-extern crate chrono;
 pub mod structs;
 pub mod reader;
 pub mod writer;
