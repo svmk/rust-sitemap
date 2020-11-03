@@ -12,7 +12,7 @@ static CONTENT: &str =
      <lastmod>2016-07-08T09:10:11+00:00</lastmod>
     <changefreq>daily</changefreq>
     \
-     <lastmod>0.2</lastmod>
+     <priority>0.2</priority>
   </url>
   <url>
     <loc>http://www.example.com/other.html</loc>
@@ -20,7 +20,7 @@ static CONTENT: &str =
      <lastmod>2016-07-18T09:10:11+00:00</lastmod>
     <changefreq>monthly</changefreq>
     \
-     <lastmod>0.1</lastmod>
+     <priority>0.1</priority>
   </url>
 </urlset>
 <sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">

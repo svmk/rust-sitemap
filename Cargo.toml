@@ -1,6 +1,6 @@
 [package]
 name = "sitemap"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Mikhail Svetov <svmk-tmsk@yandex.ru>", "tglman <https://github.com/tglman>", "John Boehr <jbboehr@gmail.com>", "Brady <https://github.com/BradyMcd>", "RaZeR-RBI <vilkov.adel@gmail.com>"]
 description = "Sitemap parser (reader) and writer"
 keywords=["sitemap","parser","reader","parse"]
