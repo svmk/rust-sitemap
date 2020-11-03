@@ -110,7 +110,7 @@ impl<T: Write + Sized> UrlSetWriter<T> {
             }
         }
         if let Priority::Value(priority) = url.priority {
-            self.sitemap.write_content_element("lastmod", priority.to_string().as_str())?;
+            self.sitemap.write_content_element("priority", priority.to_string().as_str())?;
         }
         self.sitemap.writer.write(XmlEvent::end_element().name("url"))?;
         Ok(())
