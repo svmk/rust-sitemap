@@ -80,7 +80,7 @@ Highest priority first, approximately.
 2. Sitemap validation
 
 ## Known issues
-All known issues are present on GitHub issue tracker: http://github.com/svmk/sitemap/issues. Feel free to post any found problems there.
+All known issues are present on GitHub issue tracker: http://github.com/svmk/rust-sitemap/issues. Feel free to post any found problems there.
 
 ## License
 
