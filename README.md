@@ -58,7 +58,7 @@ fn main() {
 }
 ```
 
-## Writng sitemap documents
+## Writing sitemap documents
 ```rust
 use sitemap::writer::SiteMapWriter;
 use sitemap::structs::UrlEntry;
